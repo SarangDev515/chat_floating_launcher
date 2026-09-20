@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="chat_floating_launcher.ComposerRequestButton" t-extend="mail.Composer">
+        <t t-jquery=".o_chatter_composer_tools" t-operation="append">
+            <button tabindex="6" class="btn btn-secondary fa fa-handshake-o o_composer_request_button" type="button" title="New Request" aria-label="New Request"/>
+        </t>
+    </t>
+
+    <div t-name="chat_floating_launcher.RequestDialog">
+        <div class="o_chat_request_form">
+            <div class="form-group">
+                <label for="o_chat_request_title">Title</label>
+                <input id="o_chat_request_title" type="text" class="form-control o_chat_request_title_input" maxlength="255" placeholder="Request title"/>
+            </div>
+            <div class="form-group mb0">
+                <label for="o_chat_request_description">Description</label>
+                <textarea id="o_chat_request_description" class="form-control o_chat_request_description_input" rows="5" placeholder="Describe what you are requesting..."/>
+            </div>
+        </div>
+    </div>
+
+    <div t-name="chat_floating_launcher.DecisionDialog">
+        <div class="o_chat_request_decision_form">
+            <p class="text-muted">Enter the reason for this decision, then confirm.</p>
+            <div class="form-group mb0">
+                <label for="o_chat_request_decision_reason">Reason</label>
+                <textarea id="o_chat_request_decision_reason" class="form-control o_chat_request_decision_reason_input" rows="5" placeholder="Explain why you are accepting or rejecting this request..."/>
+            </div>
+        </div>
+    </div>
+</templates>
