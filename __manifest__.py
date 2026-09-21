@@ -1,6 +1,6 @@
 {
     'name': 'Floating Chat Launcher 19',
-    'summary': 'Move Discuss to a responsive bottom-right launcher with direct chat requests.',
+    'summary': 'Free Odoo 19 floating Discuss launcher with direct chat requests and decision workflows.',
     'description': """
 Floating Chat Launcher 19
 =========================
