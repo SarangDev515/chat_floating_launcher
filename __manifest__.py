@@ -7,9 +7,9 @@
         launcher while preserving unread counters, conversation previews, and
         the standard chat actions.
     """,
-    'version': '13.0.1.0.0',
+    'version': '13.0.1.0.5',
     'category': 'Discuss',
-    'author': 'Custom Addons',
+    'author': 'SARANG T',
     'license': 'LGPL-3',
     'depends': ['mail'],
     'data': [
