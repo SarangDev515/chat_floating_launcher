@@ -1,100 +1,390 @@
+// WhatsApp-inspired styling for custom chat requests.
+$o-wa-green: #25d366;
+$o-wa-dark-green: #075e54;
+$o-wa-teal: #128c7e;
+$o-wa-chat-bg: #efeae2;
+$o-wa-text: #303030;
+$o-wa-muted: #667781;
+$o-wa-yellow: #fff3cd;
+$o-wa-red: #fce8e6;
+
 .o_chat_request {
-    margin: 8px 0;
-    padding: 12px 14px;
-    border: 1px solid #d8dce2;
-    border-left: 5px solid #6c757d;
-    border-radius: 4px;
-    background: #f8f9fa;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    position: relative;
+    margin: 10px 0;
+    padding: 13px 15px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-left: 4px solid $o-wa-teal;
+    border-radius: 4px 12px 12px 12px;
+    background: rgba(255, 255, 255, 0.92);
+    color: $o-wa-text;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
 
     &.o_chat_request_pending {
-        border-left-color: #f0ad4e;
-        background: #fffaf0;
+        border-left-color: #e0a800;
+        background: $o-wa-yellow;
     }
 
     &.o_chat_request_approved {
-        border-left-color: #28a745;
-        background: #f1fbf3;
+        border-left-color: $o-wa-green;
+        background: #e9f8ee;
     }
 
     &.o_chat_request_rejected {
-        border-left-color: #dc3545;
-        background: #fff3f4;
+        border-left-color: #d64545;
+        background: $o-wa-red;
     }
 
     &.o_chat_request_cancelled {
-        border-left-color: #6c757d;
-        background: #f1f3f5;
+        border-left-color: #8a969c;
+        background: #f1f3f4;
     }
 
     .o_chat_request_header {
         display: flex;
         align-items: center;
+        min-height: 22px;
         margin-bottom: 7px;
-        color: #495057;
+        color: $o-wa-dark-green;
 
         strong {
             margin-right: 8px;
+            font-size: 13px;
         }
     }
 
     .o_chat_request_status {
-        font-size: 12px;
-        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 10px;
+        background: rgba(18, 140, 126, 0.12);
+        color: $o-wa-teal;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
         text-transform: uppercase;
     }
 
     &.o_chat_request_pending .o_chat_request_status {
-        color: #b06f00;
+        background: rgba(224, 168, 0, 0.14);
+        color: #8a6500;
     }
 
     &.o_chat_request_approved .o_chat_request_status {
-        color: #218838;
+        background: rgba(37, 211, 102, 0.14);
+        color: #15803d;
     }
 
     &.o_chat_request_rejected .o_chat_request_status {
-        color: #c82333;
+        background: rgba(214, 69, 69, 0.12);
+        color: #b42318;
     }
 
     &.o_chat_request_cancelled .o_chat_request_status {
-        color: #6c757d;
+        background: rgba(102, 119, 129, 0.12);
+        color: $o-wa-muted;
     }
 
     .o_chat_request_title {
         margin-bottom: 5px;
+        color: $o-wa-text;
         font-size: 15px;
-        font-weight: 600;
-        color: #212529;
+        font-weight: 700;
     }
 
-    .o_chat_request_description {
+    .o_chat_request_description,
+    .o_chat_request_reason {
+        color: #465057;
+        line-height: 1.45;
         white-space: normal;
-        color: #343a40;
     }
 
     .o_chat_request_meta {
-        margin-top: 8px;
-        color: #6c757d;
-        font-size: 12px;
+        margin-top: 9px;
+        color: $o-wa-muted;
+        font-size: 11px;
     }
 
     .o_chat_request_reason {
-        margin-top: 8px;
-        color: #495057;
-        white-space: normal;
+        margin-top: 9px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     .o_chat_request_actions {
         display: flex;
-        gap: 8px;
+        flex-wrap: wrap;
+        gap: 6px;
         margin-top: 12px;
+
+        button {
+            border: 0;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: none;
+
+            &:focus {
+                box-shadow: 0 0 0 2px rgba(18, 140, 126, 0.2);
+            }
+        }
+
+        .o_chat_request_approve {
+            background: $o-wa-green;
+            color: white;
+        }
+
+        .o_chat_request_reject {
+            background: #d64545;
+            color: white;
+        }
+
+        .o_chat_request_cancel {
+            background: #e2e6e8;
+            color: #465057;
+        }
     }
 }
 
-.o_chat_request_form {
-    padding: 4px 0;
+.o_chat_request_form,
+.o_chat_request_decision_form {
+    padding: 5px 0;
 
     label {
+        margin-bottom: 5px;
+        color: $o-wa-dark-green;
+        font-size: 13px;
         font-weight: 600;
+    }
+
+    .form-control {
+        border: 1px solid #d6dce0;
+        border-radius: 8px;
+        background: #f8fafb;
+        color: $o-wa-text;
+        box-shadow: none;
+
+        &:focus {
+            border-color: $o-wa-teal;
+            box-shadow: 0 0 0 2px rgba(18, 140, 126, 0.14);
+        }
+    }
+
+    textarea.form-control {
+        resize: vertical;
+    }
+}
+
+.modal-body.o_chat_request_modal {
+    padding: 20px;
+    border-radius: 10px;
+    background: #ffffff;
+
+    & + .modal-footer {
+        .btn-primary,
+        .btn-success {
+            border-color: $o-wa-teal;
+            border-radius: 18px;
+            background: $o-wa-teal;
+        }
+
+        .btn-danger,
+        .btn-secondary {
+            border-radius: 18px;
+        }
+    }
+}
+
+// WhatsApp-style conversation window: incoming on the left, sent on the right.
+.o_thread_window {
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    background: $o-wa-chat-bg;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
+
+    .o_thread_window_header {
+        min-height: 58px;
+        padding: 10px 14px;
+        border: 0;
+        border-radius: 12px 12px 0 0;
+        background: $o-wa-dark-green;
+
+        .o_thread_window_title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+    }
+
+    .o_mail_thread {
+        background-color: $o-wa-chat-bg;
+        background-image: radial-gradient(rgba(120, 105, 88, 0.07) 1px, transparent 1px);
+        background-size: 18px 18px;
+    }
+
+    .o_mail_thread .o_thread_message {
+        align-items: flex-start;
+        width: 100%;
+        padding: 3px 9px;
+        margin-bottom: 2px;
+        background: transparent;
+        border: 0;
+
+        .o_thread_message_sidebar {
+            flex: 0 0 30px;
+            width: 30px;
+            margin-top: 3px;
+            margin-right: 6px;
+
+            .o_thread_message_sidebar_image,
+            .o_thread_message_avatar {
+                width: 30px;
+                height: 30px;
+            }
+
+            .o_thread_message_avatar {
+                border: 1px solid rgba(0, 0, 0, 0.08);
+            }
+        }
+
+        .o_thread_message_core {
+            flex: 0 1 auto;
+            width: auto;
+            max-width: 78%;
+
+            .o_mail_info {
+                display: none;
+            }
+
+            .o_thread_message_content {
+                position: relative;
+                padding: 7px 10px;
+                border-radius: 4px 12px 12px 12px;
+                background: #ffffff;
+                color: $o-wa-text;
+                font-size: 13px;
+                line-height: 1.4;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.10);
+
+                .o_chat_message_meta {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 4px;
+                    width: 100%;
+                    margin-top: 4px;
+                    color: $o-wa-muted;
+                    font-size: 9px;
+                    line-height: 1;
+                    white-space: nowrap;
+                }
+
+                .o_chat_message_ticks {
+                    display: inline-flex;
+                    align-items: center;
+                    color: #8696a0;
+                    font-size: 9px;
+
+                    i + i {
+                        margin-left: -4px;
+                    }
+
+                    &.o_chat_message_ticks_seen {
+                        color: #53bdeb;
+                    }
+                }
+
+                &:after {
+                    position: absolute;
+                    top: 0;
+                    left: -6px;
+                    width: 0;
+                    height: 0;
+                    border-top: 7px solid #ffffff;
+                    border-left: 7px solid transparent;
+                    content: '';
+                }
+            }
+        }
+
+        &.o_thread_message_mine {
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+
+            .o_thread_message_sidebar {
+                margin-right: 0;
+                margin-left: 6px;
+            }
+
+            .o_thread_message_core {
+                align-items: flex-end;
+
+                .o_mail_info {
+                    display: none;
+                }
+
+                .o_thread_message_content {
+                    border-radius: 12px 4px 12px 12px;
+                    background: #d9fdd3;
+
+                    &:after {
+                        right: -6px;
+                        left: auto;
+                        border-top-color: #d9fdd3;
+                        border-right: 7px solid transparent;
+                        border-left: 0;
+                    }
+                }
+            }
+        }
+
+        &.o_thread_message_incoming {
+            .o_thread_message_core {
+                margin-right: auto;
+            }
+        }
+
+        &.o_thread_message_mine .o_thread_message_core {
+            margin-right: 0;
+            margin-left: 0;
+        }
+    }
+
+    .o_thread_composer {
+        border-top: 1px solid #d7d1ca;
+        background: #f0f2f5;
+
+        input {
+            height: 44px;
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 0;
+            background: #ffffff;
+            color: $o-wa-text;
+        }
+    }
+}
+
+@media (max-width: 575.98px) {
+    .o_thread_window {
+        border-radius: 0;
+
+        .o_thread_window_header {
+            border-radius: 0;
+        }
+
+        .o_mail_thread .o_thread_message .o_thread_message_core {
+            max-width: 84%;
+        }
+    }
+}
+
+// The request action is shown only in direct messages by the addon JS.
+.o_composer_request_button {
+    border: 0;
+    border-radius: 50%;
+    color: $o-wa-teal;
+
+    &:hover,
+    &:focus {
+        background: rgba(18, 140, 126, 0.1);
+        color: $o-wa-dark-green;
     }
 }
