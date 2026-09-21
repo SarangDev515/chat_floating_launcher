@@ -1,11 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="group_chat_request_accept_reject" model="res.groups">
         <field name="name">Chat Request: Accept/Reject</field>
-        <field name="category_id" ref="base.module_category_usability"/>
     </record>
 
     <record id="group_chat_request_cancel" model="res.groups">
         <field name="name">Chat Request: Cancel</field>
-        <field name="category_id" ref="base.module_category_usability"/>
     </record>
 </odoo>
