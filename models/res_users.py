@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-
 from odoo import fields, models
 
 
-class Users(models.Model):
+class ResUsers(models.Model):
     _inherit = 'res.users'
 
     chat_request_enabled = fields.Boolean(
