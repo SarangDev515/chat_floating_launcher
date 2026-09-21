@@ -1,6 +1,14 @@
-// The standard Discuss messaging widget is moved to body by the companion JS.
-// Keep the original widget and dropdown behavior, but present the launcher as
-// a fixed message button in the bottom-right corner.
+// WhatsApp-inspired theme for the Odoo 13 Discuss launcher.
+// Behavior remains provided by Odoo Discuss; this file only changes presentation.
+
+$o-wa-green: #25d366;
+$o-wa-dark-green: #075e54;
+$o-wa-teal: #128c7e;
+$o-wa-chat-bg: #efeae2;
+$o-wa-line: #d8d3cc;
+$o-wa-text: #303030;
+$o-wa-muted: #667781;
+
 .o_chat_floating_launcher {
     position: fixed !important;
     right: 24px;
@@ -12,41 +20,43 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 54px;
-        height: 54px;
+        width: 58px;
+        height: 58px;
         padding: 0;
+        border: 4px solid rgba(255, 255, 255, 0.92);
         border-radius: 50%;
-        background-color: $o-brand-primary;
+        background: $o-wa-green;
         color: white;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
         text-decoration: none;
-        transition: box-shadow 0.15s ease, transform 0.15s ease;
+        transition: box-shadow 0.18s ease, transform 0.18s ease, background 0.18s ease;
 
         &:hover,
         &:focus {
+            background: darken($o-wa-green, 7%);
             color: white;
-            box-shadow: 0 5px 16px rgba(0, 0, 0, 0.34);
-            transform: translateY(-1px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.32);
+            transform: translateY(-2px);
         }
 
         > i {
-            font-size: 22px;
+            font-size: 24px;
         }
 
         .o_notification_counter {
             position: absolute;
-            top: -4px;
-            right: -4px;
+            top: -5px;
+            right: -5px;
             margin: 0;
-            min-width: 20px;
-            min-height: 20px;
+            min-width: 21px;
+            min-height: 21px;
             padding: 2px 5px;
             border: 2px solid white;
             border-radius: 12px;
-            background: #dc3545;
+            background: #e53935;
             color: white;
             font-size: 11px;
-            line-height: 16px;
+            line-height: 15px;
             text-align: center;
             vertical-align: initial;
         }
@@ -65,11 +75,162 @@
         position: absolute;
         top: auto;
         right: 0;
-        bottom: calc(100% + 12px);
+        bottom: calc(100% + 14px);
         left: auto;
+        display: none;
+        width: 380px;
+        max-height: 78vh;
         margin: 0;
-        max-height: 80vh;
+        padding: 0;
         overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 14px;
+        background: $o-wa-chat-bg;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.24);
+    }
+
+    &.show .o_mail_systray_dropdown.dropdown-menu,
+    &.show .o_mail_systray_dropdown.dropdown-menu.show {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    .o_mail_systray_dropdown_top,
+    .o_mail_systray_mobile_header {
+        flex: 0 0 auto;
+        min-height: 58px;
+        padding: 10px 14px;
+        border: 0;
+        background: $o-wa-dark-green;
+        box-shadow: none;
+    }
+
+    .o_mail_systray_dropdown_top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        > div {
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    .o_mail_systray_dropdown .o_filter_button,
+    .o_mail_systray_dropdown .o_new_message {
+        margin: 0 2px;
+        padding: 7px 9px;
+        border-radius: 18px;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover,
+        &.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        &.active {
+            cursor: default;
+        }
+    }
+
+    .o_mail_systray_dropdown .o_new_message {
+        color: white;
+        white-space: nowrap;
+    }
+
+    .o_mail_systray_dropdown_items {
+        flex: 1 1 auto;
+        min-height: 80px;
+        max-height: calc(78vh - 58px);
+        overflow-y: auto;
+        background-color: $o-wa-chat-bg;
+        background-image: radial-gradient(rgba(120, 105, 88, 0.07) 1px, transparent 1px);
+        background-size: 18px 18px;
+    }
+
+    .o_mail_systray_dropdown_items .o_mail_preview {
+        min-height: 68px;
+        padding: 10px 14px;
+        border-bottom: 1px solid $o-wa-line;
+        background: rgba(239, 234, 226, 0.94);
+        color: $o-wa-text;
+        transition: background 0.15s ease;
+
+        &:hover,
+        &.o_preview_unread:hover {
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .o_mail_preview_image {
+            width: 46px;
+            height: 46px;
+            margin-right: 11px;
+
+            > img {
+                width: 46px;
+                height: 46px;
+                border: 2px solid rgba(255, 255, 255, 0.9);
+            }
+        }
+
+        .o_preview_info {
+            min-width: 0;
+
+            .o_preview_title {
+                min-height: 22px;
+
+                .o_preview_name {
+                    color: $o-wa-text;
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+
+                .o_preview_counter {
+                    margin-left: 5px;
+                    color: $o-wa-teal;
+                    font-size: 12px;
+                }
+
+                .o_last_message_date {
+                    margin-right: 0 !important;
+                    color: $o-wa-muted;
+                    font-size: 11px;
+                }
+            }
+
+            .o_last_message_preview {
+                width: 100%;
+                max-height: 21px;
+                color: $o-wa-muted;
+                font-size: 12px;
+            }
+        }
+
+        &.o_preview_unread {
+            background: rgba(255, 255, 255, 0.58);
+
+            .o_preview_info .o_preview_title {
+                .o_preview_name,
+                .o_preview_counter {
+                    font-weight: 700;
+                }
+
+                .o_last_message_date {
+                    color: $o-wa-teal;
+                    font-weight: 700;
+                }
+            }
+        }
+    }
+
+    .o_no_activity {
+        padding: 32px 16px;
+        color: $o-wa-muted;
+        font-size: 13px;
     }
 }
 
@@ -79,18 +240,23 @@
         bottom: 16px;
 
         > a.dropdown-toggle {
-            width: 50px;
-            height: 50px;
+            width: 54px;
+            height: 54px;
         }
 
         .o_mail_systray_dropdown.dropdown-menu,
         .o_mail_systray_dropdown.dropdown-menu.show {
             position: fixed;
             right: 8px;
-            bottom: 76px;
+            bottom: 78px;
             left: 8px;
             width: auto;
-            max-height: calc(100vh - 92px);
+            max-height: calc(100vh - 94px);
+            border-radius: 14px;
+        }
+
+        .o_mail_systray_dropdown_items {
+            max-height: calc(100vh - 152px);
         }
     }
 }
