@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-name="chat_floating_launcher.ComposerRequestButton" t-extend="mail.Composer">
-        <t t-jquery=".o_chatter_composer_tools" t-operation="append">
-            <button tabindex="6" class="btn btn-secondary fa fa-handshake-o o_composer_request_button" type="button" title="New Request" aria-label="New Request"/>
-        </t>
+    <t t-name="chat_floating_launcher_19.ChatRequestDialog">
+        <Dialog title="props.title" size="'lg'">
+            <div class="o_chat_request_form">
+                <div class="mb-3">
+                    <label class="form-label" for="chat_request_title">Title</label>
+                    <input id="chat_request_title" class="form-control" type="text" maxlength="255" t-model="state.title" placeholder="Request title" autofocus="autofocus"/>
+                </div>
+                <div>
+                    <label class="form-label" for="chat_request_description">Description</label>
+                    <textarea id="chat_request_description" class="form-control" rows="5" t-model="state.description" placeholder="Describe what you are requesting..."/>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" type="button" t-att-disabled="!canSubmit" t-on-click="confirm">Send Request</button>
+                <button class="btn btn-secondary" type="button" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
     </t>
 
-    <div t-name="chat_floating_launcher.RequestDialog">
-        <div class="o_chat_request_form">
-            <div class="form-group">
-                <label for="o_chat_request_title">Title</label>
-                <input id="o_chat_request_title" type="text" class="form-control o_chat_request_title_input" maxlength="255" placeholder="Request title"/>
+    <t t-name="chat_floating_launcher_19.ChatRequestDecisionDialog">
+        <Dialog title="heading" size="'lg'">
+            <div class="o_chat_request_decision_form">
+                <p class="text-muted">Enter the reason for this decision, then confirm.</p>
+                <textarea class="form-control" rows="5" t-model="state.reason" placeholder="Explain why you are accepting or rejecting this request..." autofocus="autofocus"/>
             </div>
-            <div class="form-group mb0">
-                <label for="o_chat_request_description">Description</label>
-                <textarea id="o_chat_request_description" class="form-control o_chat_request_description_input" rows="5" placeholder="Describe what you are requesting..."/>
-            </div>
-        </div>
-    </div>
-
-    <div t-name="chat_floating_launcher.DecisionDialog">
-        <div class="o_chat_request_decision_form">
-            <p class="text-muted">Enter the reason for this decision, then confirm.</p>
-            <div class="form-group mb0">
-                <label for="o_chat_request_decision_reason">Reason</label>
-                <textarea id="o_chat_request_decision_reason" class="form-control o_chat_request_decision_reason_input" rows="5" placeholder="Explain why you are accepting or rejecting this request..."/>
-            </div>
-        </div>
-    </div>
+            <t t-set-slot="footer">
+                <button class="btn" t-att-class="props.decision === 'approved' ? 'btn-success' : 'btn-danger'" type="button" t-att-disabled="!canSubmit" t-on-click="confirm">Confirm</button>
+                <button class="btn btn-secondary" type="button" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
 </templates>
