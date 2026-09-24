@@ -11,6 +11,7 @@
     'category': 'Discuss',
     'author': 'SARANG T',
     'license': 'LGPL-3',
+    'images': ['static/description/icon.png'],  # <-- ADD THIS LINE
     'depends': ['mail'],
     'data': [
         'security/chat_request_groups.xml',
