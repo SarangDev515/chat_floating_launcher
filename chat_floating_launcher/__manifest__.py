@@ -10,7 +10,9 @@
     'version': '13.0.1.0.5',
     'category': 'Discuss',
     'author': 'SARANG T',
-    'license': 'LGPL-3',
+    'license': 'OPL-1',
+    'price': 0.20,     # Set only if selling (EUR or USD)
+    'currency': 'USD',
     'images': ['static/description/icon.png'],  # <-- ADD THIS LINE
     'depends': ['mail'],
     'data': [
