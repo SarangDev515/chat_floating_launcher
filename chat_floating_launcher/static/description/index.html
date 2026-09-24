@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating Chat Launcher | Odoo 13</title>
+    <style>
+        :root {
+            --ink: #24303a;
+            --muted: #64727d;
+            --green: #128c7e;
+            --dark-green: #075e54;
+            --light-green: #e9f7f3;
+            --purple: #4f267d;
+            --line: #dbe3e8;
+            --surface: #ffffff;
+            --page: #f4f7f9;
+            --warning: #fff7e6;
+            --warning-line: #f0c36d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--page);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        a { color: var(--green); }
+
+        .hero {
+            padding: 56px 24px 48px;
+            color: #fff;
+            background: linear-gradient(135deg, #321657 0%, var(--purple) 55%, #6937a1 100%);
+        }
+
+        .hero-inner, .page {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .hero-inner {
+            display: grid;
+            grid-template-columns: 112px 1fr;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .hero img {
+            width: 112px;
+            height: 112px;
+            object-fit: cover;
+            border-radius: 24px;
+            background: #fff;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .28);
+        }
+
+        h1, h2, h3 { line-height: 1.2; }
+        h1 { margin: 0 0 10px; font-size: clamp(30px, 5vw, 48px); }
+        h2 { margin: 0 0 18px; font-size: 27px; color: var(--dark-green); }
+        h3 { margin: 26px 0 10px; font-size: 19px; color: var(--dark-green); }
+        .hero p { margin: 0; max-width: 760px; font-size: 18px; opacity: .92; }
+        .eyebrow { margin-bottom: 10px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+
+        .page { padding: 30px 0 60px; }
+        .card {
+            margin: 0 0 24px;
+            padding: 28px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: 0 5px 18px rgba(31, 47, 58, .06);
+        }
+
+        .lead { margin-top: 0; font-size: 17px; color: #3b4852; }
+        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .feature { padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: #fbfcfd; }
+        .feature h3 { margin-top: 0; }
+
+        ul, ol { padding-left: 23px; }
+        li { margin: 7px 0; }
+        code {
+            padding: 2px 6px;
+            border-radius: 5px;
+            color: #26313a;
+            background: #eef2f4;
+            font-family: Consolas, "Liberation Mono", monospace;
+            font-size: .92em;
+        }
+        pre {
+            overflow-x: auto;
+            padding: 16px;
+            border-radius: 10px;
+            color: #edf7f3;
+            background: #1d2931;
+            font: 13px/1.55 Consolas, "Liberation Mono", monospace;
+        }
+        .note {
+            margin: 18px 0;
+            padding: 15px 18px;
+            border-left: 4px solid var(--warning-line);
+            border-radius: 8px;
+            background: var(--warning);
+        }
+        .pill {
+            display: inline-block;
+            margin: 3px 5px 3px 0;
+            padding: 4px 9px;
+            border-radius: 999px;
+            color: var(--dark-green);
+            background: var(--light-green);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+        th { color: var(--dark-green); background: #f4faf8; font-size: 13px; }
+        td:first-child { white-space: nowrap; }
+
+        .flow { display: grid; gap: 12px; margin: 20px 0 4px; }
+        .step { display: grid; grid-template-columns: 36px 1fr; gap: 13px; align-items: start; }
+        .number {
+            display: grid;
+            width: 32px;
+            height: 32px;
+            place-items: center;
+            border-radius: 50%;
+            color: #fff;
+            background: var(--green);
+            font-weight: 700;
+        }
+        .step strong { display: block; margin-top: 4px; color: var(--dark-green); }
+        .step p { margin: 3px 0 0; color: var(--muted); }
+
+        .state-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 15px; }
+        .state { padding: 14px; border-radius: 9px; text-align: center; font-weight: 700; }
+        .pending { color: #8a5a00; background: #fff2c9; }
+        .approved { color: #126b41; background: #dff6e9; }
+        .rejected { color: #9e2929; background: #ffe1e1; }
+        .cancelled { color: #53616b; background: #e8edf0; }
+
+        footer { color: var(--muted); text-align: center; font-size: 13px; }
+
+        @media (max-width: 760px) {
+            .hero-inner { grid-template-columns: 1fr; }
+            .hero img { width: 92px; height: 92px; }
+            .grid, .state-grid { grid-template-columns: 1fr; }
+            .card { padding: 21px; }
+            th, td { padding: 9px 7px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-inner">
+            <img src="icon.png" alt="Floating Chat Launcher icon">
+            <div>
+                <div class="eyebrow">Odoo 13 module</div>
+                <h1>Floating Chat Launcher</h1>
+                <p>Moves the standard Discuss messaging menu to a fixed bottom-right launcher and adds structured request cards to direct user-to-user conversations.</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="card">
+            <h2>What this module does</h2>
+            <p class="lead">This addon extends Odoo 13's existing <code>mail</code> module. It does not replace Odoo Discuss or modify Odoo core files. The original messaging widget, conversations, unread counters, filters, previews, and new-message behavior are retained; only the widget location and presentation are changed.</p>
+            <div class="grid">
+                <div class="feature">
+                    <h3>1. Floating Discuss launcher</h3>
+                    <p>The normal Discuss messaging menu is moved from the top systray into a fixed circular button in the bottom-right corner. Clicking it opens the same Odoo messaging dropdown.</p>
+                    <span class="pill">Unread counter</span>
+                    <span class="pill">Conversation previews</span>
+                    <span class="pill">Filters</span>
+                    <span class="pill">New message</span>
+                </div>
+                <div class="feature">
+                    <h3>2. Chat request workflow</h3>
+                    <p>A handshake button appears in eligible direct-chat composers. A user can send a titled request with a description, and authorized users can accept, reject, or cancel it with server-side permission checks.</p>
+                    <span class="pill">Direct chats only</span>
+                    <span class="pill">Required reason</span>
+                    <span class="pill">Realtime updates</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Floating launcher: complete working</h2>
+            <div class="flow">
+                <div class="step">
+                    <div class="number">1</div>
+                    <div><strong>Odoo loads the backend assets</strong><p><code>views/assets.xml</code> extends <code>web.assets_backend</code> and loads the active versioned frontend files: <code>chat_request_v3.js</code>, <code>floating_chat_launcher_v3.js</code>, and both SCSS files.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">2</div>
+                    <div><strong>The standard MessagingMenu is located</strong><p><code>floating_chat_launcher_v3.js</code> extends <code>web.SystrayMenu</code>, finds Odoo's existing <code>mail.systray.MessagingMenu</code>, and appends its element to <code>document.body</code>.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">3</div>
+                    <div><strong>CSS changes the presentation</strong><p>The class <code>o_chat_floating_launcher</code> makes the widget fixed at the bottom-right, gives the launcher a circular green style, retains the notification counter, and positions the dropdown above the button.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">4</div>
+                    <div><strong>The existing Discuss behavior remains active</strong><p>Because the original Odoo widget is relocated rather than rebuilt, its standard unread count, conversation previews, filters, new-message action, and chat opening behavior continue to work.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">5</div>
+                    <div><strong>Mobile layout is adjusted</strong><p>Below 576px viewport width, the button moves closer to the edges, becomes slightly smaller, and the dropdown expands between the left and right margins above the launcher.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Chat request: user workflow</h2>
+            <div class="flow">
+                <div class="step">
+                    <div class="number">1</div>
+                    <div><strong>Enable the feature for the requester</strong><p>Each user has an <code>Enable Chat Requests</code> field on the Users form. It defaults to enabled. The composer button is shown only when this setting is enabled and the current thread is an Odoo direct user-to-user chat.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">2</div>
+                    <div><strong>Open a direct Discuss conversation</strong><p>Open a private one-to-one conversation containing exactly two participants. Group channels, public channels, and chats without an active user recipient are intentionally rejected.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">3</div>
+                    <div><strong>Click New Request</strong><p>The handshake button opens the <code>New Request</code> dialog. The requester enters a required title and description, then clicks <code>Send Request</code>.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">4</div>
+                    <div><strong>Server creates the request and message</strong><p>The browser calls <code>chat.request.create_request</code> through Odoo RPC. The server validates the user, channel, participants, title, and description; creates a <code>chat.request</code> record; and posts a formatted request card as a message in the same Discuss conversation.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">5</div>
+                    <div><strong>The recipient sees the pending card</strong><p>The card displays the request title, description, requester, and <code>Pending approval</code> status. The recipient sees <code>Accept</code> and <code>Reject</code> only when the required security group and recipient identity checks pass.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">6</div>
+                    <div><strong>Decision requires a reason</strong><p>Accept and Reject open a decision dialog. A non-empty reason is required. The server records the decision, user, timestamp, and reason, then updates the original message body.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">7</div>
+                    <div><strong>The requester can cancel while pending</strong><p>The requester sees <code>Cancel</code> only when they belong to the cancel group. Cancellation is allowed only while the request is pending and updates the same message to <code>Cancelled</code>.</p></div>
+                </div>
+                <div class="step">
+                    <div class="number">8</div>
+                    <div><strong>Both users receive the updated card</strong><p>After Accept, Reject, or Cancel, the server sends a <code>chat_request_update</code> notification through Odoo's channel bus. The frontend replaces the old card without requiring a page refresh.</p></div>
+                </div>
+            </div>
+
+            <h3>Request states</h3>
+            <div class="state-grid">
+                <div class="state pending">Pending</div>
+                <div class="state approved">Approved</div>
+                <div class="state rejected">Rejected</div>
+                <div class="state cancelled">Cancelled</div>
+            </div>
+            <p>Only pending requests expose actions. Accept and Reject are recipient actions; Cancel is a requester action. Once a request reaches a final state, repeated calls return its current result instead of changing it again.</p>
+        </section>
+
+        <section class="card">
+            <h2>Security and permissions</h2>
+            <p>The module applies permissions in both the browser and the server. Hiding a button in the browser is only a usability measure; every important action is checked again by Odoo model methods.</p>
+            <table>
+                <thead>
+                    <tr><th>Control</th><th>Purpose</th><th>Enforced by</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Enable Chat Requests</code></td><td>Controls whether a user can create request cards.</td><td><code>res.users.chat_request_enabled</code> and <code>create_request()</code></td></tr>
+                    <tr><td>Chat Request: Accept/Reject</td><td>Allows a user to decide requests addressed to them.</td><td>Security group plus recipient identity check in <code>action_decide()</code></td></tr>
+                    <tr><td>Chat Request: Cancel</td><td>Allows a requester to cancel their own pending requests.</td><td>Security group plus requester identity check in <code>action_cancel()</code></td></tr>
+                    <tr><td>Internal model access</td><td>Allows regular internal users to read, create, and update request records, but not delete them through the access CSV.</td><td><code>security/ir.model.access.csv</code></td></tr>
+                </tbody>
+            </table>
+            <div class="note"><strong>Important:</strong> Accept/Reject and Cancel groups are separate. Assign only the permissions needed by each role. The server also verifies channel membership, direct-chat structure, active recipient linkage, and request ownership.</div>
+        </section>
+
+        <section class="card">
+            <h2>Data model</h2>
+            <p>The addon adds the <code>chat.request</code> model. Every request is tied to both an Odoo Discuss channel and the message that displays the request card.</p>
+            <table>
+                <thead>
+                    <tr><th>Field</th><th>Meaning</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>name</code></td><td>Request title.</td></tr>
+                    <tr><td><code>description</code></td><td>Request details.</td></tr>
+                    <tr><td><code>channel_id</code></td><td>Direct <code>mail.channel</code> conversation where the card is posted.</td></tr>
+                    <tr><td><code>message_id</code></td><td>Original <code>mail.message</code> containing the rendered request card.</td></tr>
+                    <tr><td><code>requester_id</code> / <code>recipient_id</code></td><td>The sender and the other active user in the direct conversation.</td></tr>
+                    <tr><td><code>state</code></td><td><code>pending</code>, <code>approved</code>, <code>rejected</code>, or <code>cancelled</code>.</td></tr>
+                    <tr><td><code>decided_by</code> / <code>decided_at</code></td><td>The user and timestamp associated with Accept, Reject, or Cancel.</td></tr>
+                    <tr><td><code>decision_reason</code></td><td>Required explanation for Accept or Reject; displayed on the updated card.</td></tr>
+                </tbody>
+            </table>
+            <p>The SQL constraint <code>request_message_unique</code> prevents more than one request record from being linked to the same Discuss message.</p>
+        </section>
+
+        <section class="card">
+            <h2>Technical architecture</h2>
+            <table>
+                <thead>
+                    <tr><th>File</th><th>Responsibility</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>__manifest__.py</code></td><td>Declares Odoo 13 metadata, the <code>mail</code> dependency, security data, views, QWeb templates, and version <code>13.0.1.0.5</code>.</td></tr>
+                    <tr><td><code>models/chat_request.py</code></td><td>Request model, validation, create/decide/cancel methods, safe HTML rendering, and channel-bus notifications.</td></tr>
+                    <tr><td><code>models/res_users.py</code></td><td>Adds the per-user <code>chat_request_enabled</code> setting.</td></tr>
+                    <tr><td><code>models/ir_http.py</code></td><td>Adds session flags for feature visibility and the two security groups.</td></tr>
+                    <tr><td><code>static/src/js/floating_chat_launcher_v3.js</code></td><td>Moves Odoo's standard MessagingMenu widget to the document body and applies the launcher class.</td></tr>
+                    <tr><td><code>static/src/js/chat_request_v3.js</code></td><td>Adds the composer button, request/decision dialogs, RPC calls, action visibility, message alignment, and realtime card updates.</td></tr>
+                    <tr><td><code>static/src/xml/chat_request.xml</code></td><td>Defines the QWeb templates for the request form, decision form, and composer extension.</td></tr>
+                    <tr><td><code>static/src/scss/floating_chat_launcher.scss</code></td><td>Styles the fixed launcher, unread badge, dropdown, previews, colors, spacing, and mobile layout.</td></tr>
+                    <tr><td><code>static/src/scss/chat_request.scss</code></td><td>Styles request cards, status labels, action buttons, composer controls, and chat message layout.</td></tr>
+                    <tr><td><code>views/assets.xml</code></td><td>Loads the active <code>v3</code> JavaScript and SCSS assets into the backend bundle.</td></tr>
+                    <tr><td><code>views/res_users_views.xml</code></td><td>Adds the Chat Requests checkbox to the Users form's Messaging section.</td></tr>
+                    <tr><td><code>security/chat_request_groups.xml</code></td><td>Defines the Accept/Reject and Cancel groups.</td></tr>
+                    <tr><td><code>security/ir.model.access.csv</code></td><td>Provides the base model access rule for internal users.</td></tr>
+                </tbody>
+            </table>
+            <p>The repository also contains non-<code>v3</code> copies of the frontend files for compatibility/history. The current asset declaration loads the <code>v3</code> files.</p>
+        </section>
+
+        <section class="card">
+            <h2>Installation and first-time setup</h2>
+            <ol>
+                <li>Copy or keep the addon in the configured Odoo 13 custom addons directory.</li>
+                <li>Restart the Odoo server so Python models and backend assets are available.</li>
+                <li>Enable developer mode, open Apps, and click <strong>Update Apps List</strong>.</li>
+                <li>Install <strong>Floating Chat Launcher</strong>. The addon depends on Odoo's <code>mail</code> module.</li>
+                <li>Assign <strong>Chat Request: Accept/Reject</strong> to users who should decide requests.</li>
+                <li>Assign <strong>Chat Request: Cancel</strong> to users who should cancel requests they created.</li>
+                <li>Open each user record and confirm <strong>Enable Chat Requests</strong> is checked where request creation is required.</li>
+                <li>Hard-refresh the browser with <code>Ctrl+Shift+R</code> after installation or frontend changes to rebuild/load the asset bundle.</li>
+            </ol>
+            <pre>Addon path:
+D:\odoo-13.0\extra_addons\chat_floating_launcher</pre>
+        </section>
+
+        <section class="card">
+            <h2>Operational notes and limitations</h2>
+            <ul>
+                <li>Request creation is deliberately limited to private one-to-one Discuss chats with exactly two channel partners.</li>
+                <li>The other participant must be linked to an active Odoo user.</li>
+                <li>A request title and description are required. Accept and Reject also require a reason.</li>
+                <li>Request cards are stored as normal Discuss messages, so deleting the linked channel cascades to the request record.</li>
+                <li>Decision updates use the Odoo channel bus, so both participants can see the updated card without refreshing when the normal Discuss bus is running.</li>
+                <li>The addon relocates the standard Discuss widget; it does not create an independent messaging system or replace Odoo mail models.</li>
+                <li>If the launcher or request button does not appear after an upgrade, restart Odoo, update the module, clear/rebuild assets, and hard-refresh the browser.</li>
+            </ul>
+        </section>
+
+        <footer>Floating Chat Launcher · Odoo 13 · LGPL-3 · Author: SARANG T</footer>
+    </main>
+</body>
+</html>

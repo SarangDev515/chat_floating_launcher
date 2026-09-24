@@ -5,12 +5,70 @@ odoo.define('chat_floating_launcher.chat_request', function (require) {
     var BasicComposer = require('mail.composer.Basic');
     var ExtendedComposer = require('mail.composer.Extended');
     var MailManager = require('mail.Manager');
+    var ThreadWidget = require('mail.widget.Thread');
     var core = require('web.core');
     var Dialog = require('web.Dialog');
     var rpc = require('web.rpc');
     var session = require('web.session');
 
     var _t = core._t;
+
+    ThreadWidget.include({
+        render: function () {
+            var thread = arguments[0];
+            var result = this._super.apply(this, arguments);
+            var messages = this._messages || [];
+            var self = this;
+            _.each(messages, function (message) {
+                var messageElement = self.$('.o_thread_message[data-message-id="' + message.getID() + '"]');
+                if (!messageElement.length || typeof message.isMyselfAuthor !== 'function') {
+                    return;
+                }
+                var isMine = message.isMyselfAuthor();
+                messageElement
+                    .toggleClass('o_thread_message_mine', isMine)
+                    .toggleClass('o_thread_message_incoming', !isMine);
+                self._decorateChatMessage(messageElement, message, thread);
+            });
+            return result;
+        },
+
+        _decorateChatMessage: function (messageElement, message, thread) {
+            var content = messageElement.find('.o_thread_message_content').first();
+            if (!content.length) {
+                return;
+            }
+
+            content.find('.o_chat_message_meta').remove();
+            messageElement.find('.o_mail_info .o_mail_timestamp').remove();
+
+            var meta = $('<span class="o_chat_message_meta"/>');
+            $('<span class="o_chat_message_time"/>')
+                .text(message.getDate().format('h:mm A'))
+                .appendTo(meta);
+
+            if (message.isMyselfAuthor()) {
+                var hasSeen = thread.hasSomeoneSeen && thread.hasSomeoneSeen(message);
+                var hasFetched = thread.hasSomeoneFetched && thread.hasSomeoneFetched(message);
+                var tickClass = hasSeen ? 'o_chat_message_ticks_seen' :
+                    (hasFetched ? 'o_chat_message_ticks_delivered' : 'o_chat_message_ticks_sent');
+                var ticks = messageElement.find('.o_mail_thread_message_seen_icon').first();
+                if (ticks.length) {
+                    ticks.detach()
+                        .addClass('o_chat_message_ticks ' + tickClass)
+                        .appendTo(meta);
+                } else {
+                    ticks = $('<span class="o_chat_message_ticks ' + tickClass + '"/>');
+                    $('<i class="fa fa-check"/>').appendTo(ticks);
+                    if (hasSeen || hasFetched) {
+                        $('<i class="fa fa-check"/>').appendTo(ticks);
+                    }
+                    ticks.appendTo(meta);
+                }
+            }
+            meta.appendTo(content);
+        },
+    });
 
     function canCreateRequest(composer) {
         return !!session.chat_request_enabled &&
@@ -26,6 +84,7 @@ odoo.define('chat_floating_launcher.chat_request', function (require) {
             this._super(parent, {
                 title: _t('New Request'),
                 size: 'medium',
+                dialogClass: 'o_chat_request_modal',
                 buttons: [{
                     text: _t('Send Request'),
                     classes: 'btn-primary',
@@ -73,6 +132,7 @@ odoo.define('chat_floating_launcher.chat_request', function (require) {
             this._super(parent, {
                 title: decision === 'approved' ? _t('Accept Request') : _t('Reject Request'),
                 size: 'medium',
+                dialogClass: 'o_chat_request_modal',
                 buttons: [{
                     text: decision === 'approved' ? _t('Confirm Accept') : _t('Confirm Reject'),
                     classes: decision === 'approved' ? 'btn-success' : 'btn-danger',
@@ -188,7 +248,27 @@ odoo.define('chat_floating_launcher.chat_request', function (require) {
         return matchingClass ? parseInt(matchingClass.slice(prefix.length), 10) : false;
     }
 
+    function alignThreadMessages(root) {
+        var mailService = core.bus && core.bus._services && core.bus._services.mail_service;
+        if (!mailService || !mailService.getMessage) {
+            return;
+        }
+        $(root).find('.o_thread_message[data-message-id]').each(function () {
+            var messageElement = $(this);
+            var messageID = parseInt(messageElement.attr('data-message-id'), 10);
+            var message = mailService.getMessage(messageID);
+            if (!message || typeof message.isMyselfAuthor !== 'function') {
+                return;
+            }
+            var isMine = message.isMyselfAuthor();
+            messageElement
+                .toggleClass('o_thread_message_mine', isMine)
+                .toggleClass('o_thread_message_incoming', !isMine);
+        });
+    }
+
     function ensureRequestActions(root) {
+        alignThreadMessages(root);
         $(root).find('.o_chat_request_pending').each(function () {
             var card = $(this);
             if (card.find('.o_chat_request_actions').length && card.find('.o_chat_request_actions button').length) {
